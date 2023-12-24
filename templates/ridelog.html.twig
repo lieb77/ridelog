@@ -1,1 +1,19 @@
 <!-- Add you custom twig html here -->
+
+<h2>Paul's ridelog</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Route</th><th>Miles</th><th>Date</th>
+    <tr>
+  </thead>
+
+  {% for ride in rides %}
+      <tr>
+    	{% for field in ride %}
+    		<td> {{ field }} </td>
+    	 {% endfor %}
+      </tr>
+   {% endfor %}
+ </table>

@@ -30,6 +30,15 @@ function ridelog_theme() {
   return [
     'ridelog' => [
       'render element' => 'children',
+      'variables' => [
+      	'rides' => [
+      		'ride1' => [
+      			'title' => 'Ride1',
+      			'miles' => '99',
+      			'date'  => '2023-12-25',
+      		],
+      	],
+      ],	
     ],
   ];
 }
