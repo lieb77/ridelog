@@ -1,0 +1,18 @@
+{
+    "name": "lieb/ridelog",
+    "description": "Paul's ride log",
+    "type": "drupal-module",
+    "autoload": {
+        "psr-4": {
+            "Lieb\\Ridelog\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Paul Lieberman",
+            "email": "lieb77@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {}
+}

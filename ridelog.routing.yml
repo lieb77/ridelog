@@ -1,0 +1,7 @@
+ridelog:
+  path: '/bike/rides/ridelog'
+  defaults:
+    _title: 'Ride Log'
+    _form: '\Drupal\ridelog\Form\RideLogForm'
+  requirements:
+    _access: 'TRUE'
