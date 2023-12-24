@@ -5,3 +5,11 @@ ridelog:
     _form: '\Drupal\ridelog\Form\RideLogForm'
   requirements:
     _access: 'TRUE'
+
+ridelog.miles:
+  path: '/bike/rides/miles'
+  defaults:
+    _title: 'Miles'
+    _controller: '\Drupal\ridelog\Controller\RidelogController'
+  requirements:
+    _permission: 'access content'
