@@ -48,21 +48,19 @@ class RideLog {
 			$total       = 0;   // Total number of miles
 			$numrides    = 0;   // Number of rides
 	
-			// initialize each month? 
+			// initialize each bike 
 			foreach ($this->bikes as $nid => $bike){
 				$bike_total[$bike] = 0; 
 			}
 			
-			$months = [1,2,3,4,5,6,7,8,9,10,11,12];
+			// initialize each month 
+			$months = ['Jan','Feb','Mar','Apr','May','Jun','Jul', 'Aug','Sep','Oct','Nov','Dec'];
 			foreach ($months as $mon) {
 				$month_total[$mon] = 0;		
 				foreach ($this->bikes as $nid => $bike){	
 					$month_bike[$mon][$bike] = 0;
 				}
 			}			
-			
-			
-			
 		
 			// query rides for each year    
     		$rides = $this->query_rides($year);    		    		
@@ -72,21 +70,18 @@ class RideLog {
     			$miles = $ride['field_miles'];
     			$date  = $ride['field_ridedate'];
     			    		
-    			$mon = intval(date('m', strtotime($date)));
-    			 
+    			$mon = date('M', strtotime($date));
+    		 
 				// Build some arrays to hold the data
 				// ---------------------------------------
 				$month_total[$mon] += $miles; 
 			    $bike_total[$bike] += $miles;
-				$month_bike[$mon][$bike] += $miles;
+				$month_bike[$mon][$bike] += $miles; 				
 				$total += $miles;
 				$numrides++;	
 			}			
-
-			dpm($month_bike);	
-			
-			break;	
-    		
+			dpm([[$year, $total, $numrides], $month_total, $bike_total, $month_bike]);	
+			    		
     	}
 		
 		$this->logger->notice('Constructor finished');
@@ -154,7 +149,7 @@ class RideLog {
    		$nids = \Drupal::entityQuery('node')
    	  		->accessCheck(TRUE)
       		->condition('type', 'bicycle')
-      		->condition('field_bike_activre', TRUE)
+      //		->condition('field_bike_activre', TRUE)
       		->execute();		
 		$nodes = $this->storage->loadMultiple($nids);
 		// loop through the results 
