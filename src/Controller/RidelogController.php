@@ -1,4 +1,4 @@
-<?php declare(strict_types = 1);
+<?php
 
 /**
  * @file
@@ -24,7 +24,6 @@ final class RidelogController extends ControllerBase {
 
 		$ridelog = new RideLog();
     
-    	//$output = "<table>";
     	$rides = $ridelog->get_rides();
     	
     	return [  

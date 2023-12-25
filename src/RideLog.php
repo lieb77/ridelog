@@ -18,42 +18,154 @@ use Drupal\node\Entity\Node;
 class RideLog {
 
 	protected $rides;
-  	protected $fields = ['field_miles', 'field_ridedate'];
+	protected $bikes;
+  	protected $fields = [ 'field_ridedate', 'field_miles'];
   	protected $logger;
+  	protected $storage;
+  	protected $query;
 
 	// constructor initializes database query
 	public function __construct($params = []) {
 	
 		$this->logger = \Drupal::logger('ridelog');
+      	$this->storage = \Drupal::entityTypeManager()->getStorage('node');
+		
+		// Get the array of bikes
+		$this->query_bikes();
+		
+		
+		// Loop through years - log starts in 2004
+  		// ----------------------------------------
+  		$yr = date('Y');
+  		for ($year = $yr; $year > 2019; $year--) {
 
-   		$result = \Drupal::entityQuery('node')
-   	  		->accessCheck(TRUE)
-      		->condition('type', 'ride')
-      		->condition('field_ridedate', "2020-01-01", '>' )
-      		->sort('field_ridedate', 'DESC')
-      		->execute();
+			// Initialize data for each year
+			// -------------------------------------------------------------
+			$rides       = [];
+			$month_total = [];  // Total miles for each month
+			$bike_total  = [];  // Total miles for each bike
+			$month_bike  = [];  // Miles for each bike for each month
+			$total       = 0;   // Total number of miles
+			$numrides    = 0;   // Number of rides
+	
+			// initialize each month? 
+			foreach ($this->bikes as $nid => $bike){
+				$bike_total[$bike] = 0; 
+			}
+			
+			$months = [1,2,3,4,5,6,7,8,9,10,11,12];
+			foreach ($months as $mon) {
+				$month_total[$mon] = 0;		
+				foreach ($this->bikes as $nid => $bike){	
+					$month_bike[$mon][$bike] = 0;
+				}
+			}			
+			
+			
+			
+		
+			// query rides for each year    
+    		$rides = $this->query_rides($year);    		    		
+    			
+    		foreach ($rides as $nid => $ride) {
+    			$bike  = $ride['field_bike'];
+    			$miles = $ride['field_miles'];
+    			$date  = $ride['field_ridedate'];
+    			    		
+    			$mon = intval(date('m', strtotime($date)));
+    			 
+				// Build some arrays to hold the data
+				// ---------------------------------------
+				$month_total[$mon] += $miles; 
+			    $bike_total[$bike] += $miles;
+				$month_bike[$mon][$bike] += $miles;
+				$total += $miles;
+				$numrides++;	
+			}			
 
-    	// loop through the results 
-    	foreach ($result as $nid => $ride) {
-      		$node_storage = \Drupal::entityTypeManager()->getStorage('node');
-      		$node = $node_storage->load($nid);
-      		$title = $node->getTitle();
-      		$this->rides[$nid] = [];
-      		$this->rides[$nid]['title'] = $title;
-      		foreach ($this->fields as $field) {
-        		$value = $node->get($field)->getValue();
-        		$this->rides[$nid][$field] = $value[0]['value'];
-      		}
+			dpm($month_bike);	
+			
+			break;	
+    		
     	}
-    	
-    	$this->logger->notice('Constructor finished');
+		
+		$this->logger->notice('Constructor finished');
+		
+	}
+	
+	
+	/**
+	 * return an array of rides	
+	 *
+	 */	
+	public function get_rides() {			
+		return $this->rides;
   	}
 
-
-  public function get_rides() {
- 
-    return $this->rides;
+	/**
+	 * Get an array of rides	
+	 *
+	 */	
+		
+	public function query_rides($year) {
+		
+   		$nids = \Drupal::entityQuery('node')
+   	  		->accessCheck(TRUE)
+      		->condition('type', 'ride')
+      		->condition('field_ridedate', $year . "-01-01", '>=' )
+//      		->condition('field_bike.entity:node.title', $bike)
+      		->sort('field_ridedate', 'DESC')
+      		->execute();
+		
+		$nodes = $this->storage->loadMultiple($nids);
+		
+		$rides = [];
+		// loop through the results 
+		foreach ($nodes as $nid => $ride) {
+	
+			$rides[$nid] = [];
+      		
+      		// Get the title (route)
+      		$rides[$nid]['title'] = $ride->getTitle();
+      		
+      		// Get the bike
+      		$value = $ride->get('field_bike')->getValue();      		
+      		$bike_nid = $value[0]['target_id'];
+      		$rides[$nid]['field_bike'] = $this->bikes[$bike_nid];
+      		
+      		// Get miles and date
+      		foreach ($this->fields as $field) {
+        		$value = $ride->get($field)->getValue();
+        		$rides[$nid][$field] = $value[0]['value'];
+      		}
+      			
+    	}   
+    	return $rides; 	    	  
 	}
+
+	/**
+	 *
+	 * Get an array of bicycles
+	 *
+	 */
+	protected function query_bikes() {
+		$this->logger->notice('get_bikes');
+
+   		$nids = \Drupal::entityQuery('node')
+   	  		->accessCheck(TRUE)
+      		->condition('type', 'bicycle')
+      		->condition('field_bike_activre', TRUE)
+      		->execute();		
+		$nodes = $this->storage->loadMultiple($nids);
+		// loop through the results 
+    	foreach ($nodes as $nid => $bike) {
+	  		$title = $bike->getTitle();
+    		$this->bikes[$nid] = $title;
+    	}    
+	}
+
+
+/** Legacy Drupal 7 code **/
 
 /**
  *
