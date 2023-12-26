@@ -1,0 +1,30 @@
+<!-- Add you custom twig html here -->
+
+<h2>Paul's ridelog</h2>
+
+{% for year,months in rides %}
+	<h3> {{ year }} </h3>    
+<table>
+<thead>
+<tr><th>Month</th>
+{% for bike in bikes %}
+	<th>{{ bike }}</th>
+{% endfor %}
+<th>Total</th>
+</tr>
+    {% for month,bikes in months %}
+		<tr><td> {{ month }} </td>
+			{% for bike,miles in bikes %}				
+				<td> {{ miles }} </td>
+			{% endfor %}
+			<td>{{ month_total[year][month] }}</td>	
+		</tr>
+    {% endfor %}
+    <tr><td>Total</td>
+    {% for bike in bikes %}
+    	<td>{{ bike_total[year][bike] }}</td>
+    {% endfor %}
+    <td>{{ year_total[year] }}</td>
+    </tr>
+    </table>
+{% endfor %}

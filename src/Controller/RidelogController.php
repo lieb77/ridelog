@@ -24,33 +24,18 @@ final class RidelogController extends ControllerBase {
 
 		$ridelog = new RideLog();
     
-    	$rides = $ridelog->get_rides();
-    	
-    	return [  
-      		'#theme' => 'ridelog',
-      		'#rides' => $rides,
-	    ];
-    	
-    	
-   /* 	
-		foreach ($rides as $ride) {
-			$output .= "<tr>";
-			foreach($ride as $field) {
-				$output .= "<td>" . $field . "</td>"; 
-			}
-			$output .= "</tr>";
-		}
+    	$data = $ridelog->monthly_summary();
 
-    	$output .= "</table>";
-    	
-    	$build['content'] = [
-      		'#type' => 'item',
-      		'#markup' => $this->t($output),
-    	];
 
-    	return $build;
-	*/
-    	
+		$render_array = [  
+      		'#theme'       => 'ridesummary',
+      		'#rides'       => $data['rides'], 
+        	'#year_total'  => $data['year_total'],
+            '#month_total' => $data['month_total'], 
+        	'#bike_total'  => $data['bike_total'],
+        ];
+        
+    	return $render_array;
     	
 	}
 

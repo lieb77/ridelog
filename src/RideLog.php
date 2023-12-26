@@ -13,13 +13,17 @@
 
 namespace Drupal\ridelog;
 
+use Drupal\ridelog\Ride;
+use Drupal\ridelog\Rides;
 use Drupal\node\Entity\Node;
 
 class RideLog {
 
+	protected $rideclass;
 	protected $rides;
 	protected $bikes;
-  	protected $fields = [ 'field_ridedate', 'field_miles'];
+	protected $fulldata;
+
   	protected $logger;
   	protected $storage;
   	protected $query;
@@ -29,47 +33,107 @@ class RideLog {
 	
 		$this->logger = \Drupal::logger('ridelog');
       	$this->storage = \Drupal::entityTypeManager()->getStorage('node');
+      	
+      	$this->rideclass = new Rides();
 		
 		// Get the array of bikes
 		$this->query_bikes();
 		
+		// query rides for each year    
+    	$this->query_rides("2014"); 
+    	
+    	$this->monthly_summary();
+    		
+		$this->logger->notice('Constructor finished');		
+	}	
+
+	/**
+	 * return an array of rides	
+	 *
+	 */	
+	public function get_rides() {			
+		return $this->rides;
+  	}
+	
+	
+	public function monthly_summary() {
+		$months = ['Jan','Feb','Mar','Apr','May','Jun','Jul', 'Aug','Sep','Oct','Nov','Dec'];
+		$bikes  = ['Soma Saga', 'Grando', 'Ravn'];
+  		$yr = date('Y');
+  		
+  		// Loop though the years
+  		for ($year = $yr; $year > 2015; $year--) {
+  			$year_total[$year] = 0;
+  			
+  			// Must initialize each bike total for the year
+  			foreach ($bikes as $nid => $bike){
+  					$bike_total[$year][$bike] = 0;
+  			}
+  			
+  			// Loop through the months
+  			foreach ($months as $month){
+  				$month_total[$year][$month]  = 0;
+  				
+  				// Loop through the bikes
+  				foreach ($bikes as $nid => $bike){
+  					$rides[$year][$month][$bike] = 0;
+  					$full = $this->rideclass->rides_by_bike_year_month($bike, $year, $month);  				  				
+  					
+  					// Loop through the rides
+  					foreach ($full as $ride) {
+  						$miles = $ride->get_miles(); 
+  						$rides[$year][$month][$bike] += $miles;
+  						$month_total[$year][$month] += $miles;
+  						$year_total[$year]   += $miles;
+  						$bike_total[$year][$bike]   += $miles;
+  					}					
+  				}
+  			}
+		}
+		return [
+			'rides'       => $rides, 
+			'year_total'  => $year_total,
+			'month_total' => $month_total,
+			'bike_total'  => $bike_total,
+		];	
+	}
+		
+	protected function calculate() {	
+		$months = ['Jan','Feb','Mar','Apr','May','Jun','Jul', 'Aug','Sep','Oct','Nov','Dec'];
 		
 		// Loop through years - log starts in 2004
   		// ----------------------------------------
   		$yr = date('Y');
-  		for ($year = $yr; $year > 2019; $year--) {
+  		for ($year = $yr; $year > 2015; $year--) {
 
 			// Initialize data for each year
 			// -------------------------------------------------------------
+			// unset($rides, $month_total, $bike_total, $month_bike, $total, $numrides);
 			$rides       = [];
 			$month_total = [];  // Total miles for each month
 			$bike_total  = [];  // Total miles for each bike
 			$month_bike  = [];  // Miles for each bike for each month
 			$total       = 0;   // Total number of miles
 			$numrides    = 0;   // Number of rides
-	
+
 			// initialize each bike 
 			foreach ($this->bikes as $nid => $bike){
 				$bike_total[$bike] = 0; 
 			}
 			
 			// initialize each month 
-			$months = ['Jan','Feb','Mar','Apr','May','Jun','Jul', 'Aug','Sep','Oct','Nov','Dec'];
 			foreach ($months as $mon) {
 				$month_total[$mon] = 0;		
 				foreach ($this->bikes as $nid => $bike){	
 					$month_bike[$mon][$bike] = 0;
 				}
-			}			
-		
-			// query rides for each year    
-    		$rides = $this->query_rides($year);    		    		
+			}			  		    		
     			
-    		foreach ($rides as $nid => $ride) {
+    		foreach ($this->rides as $nid => $ride) {
     			$bike  = $ride['field_bike'];
     			$miles = $ride['field_miles'];
     			$date  = $ride['field_ridedate'];
-    			    		
+    			    			    		
     			$mon = date('M', strtotime($date));
     		 
 				// Build some arrays to hold the data
@@ -79,31 +143,43 @@ class RideLog {
 				$month_bike[$mon][$bike] += $miles; 				
 				$total += $miles;
 				$numrides++;	
-			}			
-			dpm([[$year, $total, $numrides], $month_total, $bike_total, $month_bike]);	
-			    		
-    	}
-		
-		$this->logger->notice('Constructor finished');
-		
+			}	
+					
+			// Remove bikes with zero miles for this year
+			foreach ($this->bikes as $nid => $bike) {
+			    if ($bike_total[$bike] < 1) {
+					unset($bike_total[$bike]);
+				}
+			}
+			// Remove bikes with zero miles for eqch month
+			foreach ($months as $mon) {
+				foreach ($this->bikes as $nid => $bike) {
+					if ($month_bike[$mon][$bike] < 1) {		
+						unset($month_bike[$mon][$bike]);
+					}
+				}
+			}
+			
+			// Save data for this year
+    		$this->fulldata[$year] = [
+    			$total, $numrides, $month_total, $bike_total, $month_bike    		
+    		];
+    		
+			// dpm([[$year, $total, $numrides], $month_total, $bike_total, $month_bike]);	
+			break;    		
+    	}	
 	}
 	
 	
-	/**
-	 * return an array of rides	
-	 *
-	 */	
-	public function get_rides() {			
-		return $this->rides;
-  	}
 
 	/**
 	 * Get an array of rides	
 	 *
 	 */	
 		
-	public function query_rides($year) {
-		
+	protected function query_rides($year) {
+	
+		// Will return everything from $year on		
    		$nids = \Drupal::entityQuery('node')
    	  		->accessCheck(TRUE)
       		->condition('type', 'ride')
@@ -117,25 +193,35 @@ class RideLog {
 		$rides = [];
 		// loop through the results 
 		foreach ($nodes as $nid => $ride) {
-	
-			$rides[$nid] = [];
-      		
+	     		
       		// Get the title (route)
-      		$rides[$nid]['title'] = $ride->getTitle();
+      		$route = $ride->getTitle();
       		
       		// Get the bike
       		$value = $ride->get('field_bike')->getValue();      		
       		$bike_nid = $value[0]['target_id'];
-      		$rides[$nid]['field_bike'] = $this->bikes[$bike_nid];
+      		$bike = $this->bikes[$bike_nid];      		      		
       		
-      		// Get miles and date
-      		foreach ($this->fields as $field) {
-        		$value = $ride->get($field)->getValue();
-        		$rides[$nid][$field] = $value[0]['value'];
-      		}
-      			
+      		// Get the miles
+      		$value = $ride->get('field_miles')->getValue();
+        	$miles = $value[0]['value'];
+      		
+      		// Get the date
+			$value = $ride->get('field_ridedate')->getValue();
+			$date = $value[0]['value'];			
+			
+			$this->rides[$nid]['title']          = $route;
+			$this->rides[$nid]['field_bike']     = $bike;
+			$this->rides[$nid]['field_miles']    = $miles;
+			$this->rides[$nid]['field_ridedate'] = $date;
+			
+			$year  = date('Y', strtotime($date));
+			$month = date("M", strtotime($date));
+			
+			// Save the data
+			$this->rideclass->add_ride($nid, $year, $month, $bike, $miles);
+
     	}   
-    	return $rides; 	    	  
 	}
 
 	/**
@@ -159,343 +245,6 @@ class RideLog {
     	}    
 	}
 
-
-/** Legacy Drupal 7 code **/
-
-/**
- *
- * ridelog_stats accessed at site-url/ridelog/stats
- *
- * read the ridelog from the database and display stats and log
- *
- * @return
- *  Formatted HTML
- *
-*/
-public function ridelog_by_bike() {
-
-  // Get the current year
-  // --------------------------------------------
-  $yr = date('Y');
-  $rides = array();
-
-  $output = "<div id='ridelog'>";
-  
-  // Get an array of bike names
-  $query = db_select('node', 'n')
-      ->fields('n', array('nid', 'title'))
-      ->condition('type', 'bicycle')
-      ->execute();
-  
-  $all_bikes = $query->fetchAllAssoc('nid');
-  $bikes     = $query->fetchCol('title');
-
-  // Now get all the rides
-  $query = db_select('node', 'a');
-  $query->join('field_data_field_ridedate', 'b', 'b.entity_id = a.nid');
-  $query->join('field_data_field_miles', 'c', 'c.entity_id = a.nid');
-  $query->join('field_data_field_bike', 'd', 'd.entity_id = a.nid');
-  $query->fields('a', array('nid', 'title'));
-  $query->fields('b', array('field_ridedate_value'));
-  $query->fields('c', array('field_miles_value'));
-  $query->fields('d', array('field_bike_target_id'));
-  $query->orderBy('b.field_ridedate_value', 'DESC');
-  $result = $query->execute()->fetchAll();
-
-  // Loop through years - log starts in 2004
-  // ----------------------------------------
-  for ($year = $yr; $year > 2004; $year--) {
-
-    // Initialize data for each year
-    // -------------------------------------------------------------
-    $month_total = array();  // Total miles for each month
-    $bike_total  = array();  // Total miles for each bike
-    $month_bike  = array();  // Miles for each bike for each month
-    $total       = 0;        // Total number of miles
-    $numrides    = 0;        // Number of rides
-
-    // Get all of the results 
-    // ------------------------------------------------------
-    foreach ($result as $item) {
-
-      if ($item->field_ridedate_value > $year . '-12-31 00:00:00') {
-        continue;
-      }
-      if ($item->field_ridedate_value < $year . '-01-01') {
-        break;
-      }
-
-      $bike     = $all_bikes[$item->field_bike_target_id]->title;
-      $ridedate = $item->field_ridedate_value;
-      $miles    = $item->field_miles_value;
-
-      $mon = date('M', strtotime($ridedate));
-
-      // Build some arrays to hold the data
-      // ---------------------------------------
-      $month_total[$mon] += $miles;
-      $bike_total[$bike] += $miles;
-      $month_bike[$mon][$bike] += $miles;
-      $total += $miles;
-      $numrides++;
-    }
-    
-    // Remove bikes with zero miles for this year
-    foreach ($bikes as $bike) {
-      if ($bike_total[$bike] < 1) {
-        unset($bike_total[$bike]);
-      }
-    }
-
-    // Now sort the rest of them by miles using our custom function below
-    uasort($bike_total, 'milecmp');
-
-    // Build a table to display the monthly totals
-    // -----------------------------------------
-    $table = array();
-    $output .= "<h3>Number of rides for $year: $numrides</h3>";    
-
-    // Column headings for each bike 
-    // -------------------------------
-    $table['header'] = array('Bike:');
-    foreach ($bike_total as  $bike => $miles) {
-      $table['header'][] = $bike;
-    }
-    $table['header'][] = 'Total';
-
-    // Loop through the months
-    // ---------------------------------------------------------
-    foreach ($month_total as $month => $montotal) { 
-      $table['rows'][$month] = array($month);
-
-      // Loop through the bikes
-      // -------------------------------------------------------
-      foreach ($bike_total as $bike => $miles) {
-        $table['rows'][$month][] = $month_bike[$month][$bike];
-      }
-      $table['rows'][$month][] = $montotal;
-    }
-
-    // Yearly totals for each bike and the year
-    // ----------------------------------------------------------
-    $table['rows']['Year'] = array('Year');
-    foreach ($bike_total as $bike => $miles ) {
-      $table['rows']['Year'][] = $miles;
-    }
-    $table['rows']['Year'][] = $total;
-
-    // Call the theme function to build the table
-    $output .= theme('table', $table);
-  }
-  $output .= '</div>';
-  return t($output);
-
-}
-
-
-/**
- *
- * ridelog_range accessed at site-url/ridelog/range
- *
- * Display number of rides in each distance range for each year 
- *
- * @return
- *  Formatted HTML
- *
-*/
-function ridelog_by_distance($gap) {
-
-  // Get the current year
-  // --------------------------------------------
-  $yr = date('Y');
-  $rides = array();
-
-  $output = "<div id='ridelog'>";
-
-  // Create an array of distance ranges
-  // ----------------------------------
-   $groups[1] = [
-    "< 20" => [
-      "low"  => 1,
-      "high" => 19,
-    ],
-    "20-59" => [
-      "low"  => 20,
-      "high" => 59,
-    ],
-    "60-99" => [
-      "low"  => 60,
-      "high" => 99,
-    ],
-    "> 100" => [
-      "low"  => 100,
-      "high" => 500,
-    ],
-  ];
-
-  $groups[2] = [
-    "< 20" => [
-      "low"  => 1,
-      "high" => 19,
-    ],
-    "20-39" => [
-      "low"  => 20,
-      "high" => 39,
-    ],
-    "40-59" => [
-      "low"  => 40,
-      "high" => 59,
-    ],
-    "60-79" => [
-      "low"  => 60,
-      "high" => 79,
-    ],
-    "80-99" => [
-      "low"  => 80,
-      "high" => 99,
-    ],
-    "100-119" => [
-      "low"  => 100,
-      "high" => 119,
-    ],
-    "> 120" => [
-      "low"  => 120,
-      "high" => 500,
-    ],
-  ];
-
-  $groups[3] = [
-    "< 10" => [
-      "low"  => 1,
-      "high" => 9,
-    ],
-    "10-19" => [
-      "low"  => 10,
-      "high" => 19,
-    ],
-    "20-29" => [
-      "low"  => 20,
-      "high" => 29,
-    ],
-    "30-39" => [
-      "low"  => 30,
-      "high" => 39,
-    ],
-    "40-49" => [
-      "low"  => 40,
-      "high" => 49,
-    ],
-    "50-59" => [
-      "low"  => 50,
-      "high" => 59,
-    ],
-    "60-69" => [
-      "low"  => 60,
-      "high" => 69,
-    ],
-    "70-79" => [
-      "low"  => 70,
-      "high" => 79,
-    ],
-    "80-89" => [
-      "low"  => 80,
-      "high" => 89,
-    ],
-    "90-99" => [
-      "low"  => 90,
-      "high" => 99,
-    ],
-    "100-109" => [
-      "low"  => 100,
-      "high" => 109,
-    ],
-    "110-119" => [
-      "low"  => 110,
-      "high" => 119,
-    ],
-    "> 120" => [
-      "low"  => 120,
-      "high" => 500,
-    ],
-  ];
-
-  $ranges = $groups[$gap];
-
-  // Now get all the rides
-  $query = db_select('node', 'a');
-  $query->join('field_data_field_ridedate', 'b', 'b.entity_id = a.nid');
-  $query->join('field_data_field_miles', 'c', 'c.entity_id = a.nid');
-  $query->fields('a', array('nid', 'title'));
-  $query->fields('b', array('field_ridedate_value'));
-  $query->fields('c', array('field_miles_value'));
-  $query->orderBy('b.field_ridedate_value', 'DESC');
-  $result = $query->execute()->fetchAll();
-
-  // Loop through years - log starts in 2004
-  // ----------------------------------------
-  for ($year = $yr; $year > 2004; $year--) {
-
-    // Initialize data for each year
-    // -------------------------------------------------------------
-    $range_totals = array(); // Miles for distance range
-    $total       = 0;        // Total number of miles
-    $numrides    = 0;        // Number of rides
-
-    // ------------------------------------------------------
-    foreach ($result as $item) {
-
-      // Filter by year
-      if ($item->field_ridedate_value > $year . '-12-31 00:00:00') {
-        continue;
-      }
-      if ($item->field_ridedate_value < $year . '-01-01') {
-        break;
-      }
-
-      $miles    = $item->field_miles_value;
-
-      // Build some arrays to hold the data
-      // ---------------------------------------
-      $total += $miles;
-      $numrides++;
-
-      // Increment the range
-      foreach ($ranges as $label => $range) {
-        if ($miles >= $range['low'] && $miles <= $range['high']){
-          $range_totals[$label]++;
-          break;
-        }
-      }
-    }
-    // Build a table to display the monthly totals
-    // -----------------------------------------
-    $table = array();
-    $output .= "<h3>Number of rides for $year: $numrides</h3>";    
-
-    // Column headings for each rangea
-    // -------------------------------
-    foreach ($ranges as  $label => $range) {
-      $table['header'][] = $label . " miles";
-      $table['rows'][0][$label] = $range_totals[$label]; 
-     }
-
-    // Call the theme function to build the table
-    $output .= theme('table', $table);
-  }
-  $output .= '</div>';
-  return t($output);
-
-}
-
-/**
- * Callback for uasort
- */
-function milecmp($a, $b) {
-  if ($a == $b) {
-    return 0;
-  }
-  return ($a > $b) ? -1 : 1;
-}
-
+// End of class
 
 }
