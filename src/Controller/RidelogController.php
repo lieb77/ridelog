@@ -40,14 +40,5 @@ final class RidelogController extends ControllerBase {
     	return $render_array;
     	
 	}
-	
-	public function get_empty_rides() {
-		$emptyrides = new EmptyRides();
-		$rides = $emptyrides->get_empty();
-		$emptyrides->get_d7_rides();
-			
-		return ['#data' => " empty rides"];
-	
-	}
 
 }
