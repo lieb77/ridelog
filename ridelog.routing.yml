@@ -9,7 +9,7 @@ ridelog:
 ridelog.miles:
   path: '/bike/rides/miles'
   defaults:
-    _title: 'Miles'
+    _title: 'Stats'
     _controller: '\Drupal\ridelog\Controller\RidelogController'
   requirements:
     _permission: 'access content'

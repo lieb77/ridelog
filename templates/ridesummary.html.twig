@@ -7,21 +7,24 @@
 <table>
 <thead>
 <tr><th>Month</th>
-{% for bike in bikes %}
+
+{% for bike in bikes[year] %}
 	<th>{{ bike }}</th>
 {% endfor %}
+
 <th>Total</th>
 </tr>
-    {% for month,bikes in months %}
+    {% for month,bikesy in months %}
 		<tr><td> {{ month }} </td>
-			{% for bike,miles in bikes %}				
+			{% for bike,miles in bikesy %}				
 				<td> {{ miles }} </td>
 			{% endfor %}
 			<td>{{ month_total[year][month] }}</td>	
 		</tr>
     {% endfor %}
     <tr><td>Total</td>
-    {% for bike in bikes %}
+
+    {% for bike in bikes[year] %}
     	<td>{{ bike_total[year][bike] }}</td>
     {% endfor %}
     <td>{{ year_total[year] }}</td>

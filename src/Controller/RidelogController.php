@@ -29,6 +29,7 @@ final class RidelogController extends ControllerBase {
 
 		$render_array = [  
       		'#theme'       => 'ridesummary',
+      		'#bikes'	   => $data['bikes'],
       		'#rides'       => $data['rides'], 
         	'#year_total'  => $data['year_total'],
             '#month_total' => $data['month_total'], 

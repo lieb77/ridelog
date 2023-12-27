@@ -40,7 +40,7 @@ class RideLog {
 		$this->query_bikes();
 		
 		// query rides for each year    
-    	$this->query_rides("2014"); 
+    	$this->query_rides("2003"); 
     	
     	$this->monthly_summary();
     		
@@ -58,15 +58,15 @@ class RideLog {
 	
 	public function monthly_summary() {
 		$months = ['Jan','Feb','Mar','Apr','May','Jun','Jul', 'Aug','Sep','Oct','Nov','Dec'];
-		$bikes  = ['Soma Saga', 'Grando', 'Ravn'];
+		// $bikes  = ['Soma Saga', 'Grando', 'Ravn', 'Armstrong'];
   		$yr = date('Y');
   		
   		// Loop though the years
-  		for ($year = $yr; $year > 2015; $year--) {
+  		for ($year = $yr; $year > 2003; $year--) {
   			$year_total[$year] = 0;
   			
   			// Must initialize each bike total for the year
-  			foreach ($bikes as $nid => $bike){
+  			foreach ($this->bikes as $nid => $bike){
   					$bike_total[$year][$bike] = 0;
   			}
   			
@@ -75,7 +75,7 @@ class RideLog {
   				$month_total[$year][$month]  = 0;
   				
   				// Loop through the bikes
-  				foreach ($bikes as $nid => $bike){
+  				foreach ($this->bikes as $nid => $bike){
   					$rides[$year][$month][$bike] = 0;
   					$full = $this->rideclass->rides_by_bike_year_month($bike, $year, $month);  				  				
   					
@@ -90,7 +90,25 @@ class RideLog {
   				}
   			}
 		}
+		
+		// build and array of bikes with miles for each year
+		// unset bikes with no miles in each array
+		foreach ($this->bikes as $nid => $bike){
+			for ($year = $yr; $year > 2003; $year--) {
+				if ($bike_total[$year][$bike] > 0) {
+					$bikes[$year][] = $bike;
+				}
+				else {
+					unset($bike_total[$year][$bike]);
+					foreach ($months as $month){
+						unset($rides[$year][$month][$bike]);
+					}
+				}
+			}
+		}				
+		
 		return [
+			'bikes'		  => $bikes,
 			'rides'       => $rides, 
 			'year_total'  => $year_total,
 			'month_total' => $month_total,
@@ -104,7 +122,7 @@ class RideLog {
 		// Loop through years - log starts in 2004
   		// ----------------------------------------
   		$yr = date('Y');
-  		for ($year = $yr; $year > 2015; $year--) {
+  		for ($year = $yr; $year > 2003; $year--) {
 
 			// Initialize data for each year
 			// -------------------------------------------------------------
@@ -183,7 +201,7 @@ class RideLog {
    		$nids = \Drupal::entityQuery('node')
    	  		->accessCheck(TRUE)
       		->condition('type', 'ride')
-      		->condition('field_ridedate', $year . "-01-01", '>=' )
+      		->condition('field_ridedate', $year . "-01-01", '>' )
 //      		->condition('field_bike.entity:node.title', $bike)
       		->sort('field_ridedate', 'DESC')
       		->execute();

@@ -43,7 +43,7 @@ function ridelog_theme() {
     $templates['ridesummary'] = [
 		'render element' => 'children',
 		'variables' => [
-			'bikes'	=> ['Soma Saga', 'Grando', 'Ravn'],
+			'bikes'	=> ['year'],
 		    'rides' => ['year' => ['month' => ['bike' => 'miles',],],],    			
     		'year_total'  => ['year' => 'miles'],
     		'month_total' => ['year' => ['month' => 'miles']],
