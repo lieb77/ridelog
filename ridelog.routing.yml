@@ -13,3 +13,12 @@ ridelog.miles:
     _controller: '\Drupal\ridelog\Controller\RidelogController'
   requirements:
     _permission: 'access content'
+
+ridelog.empty:
+  path: '/bike/rides/empty'
+  defaults:
+    _title: 'Empty rides'
+    _controller: '\Drupal\ridelog\Controller\RidelogController:get_empty_rides'
+  requirements:
+    _permission: 'access content'
+    
