@@ -55,8 +55,12 @@ class RideLog {
 		return $this->rides;
   	}
 	
+		public function monthly_summary() {
+		
+		}
 	
-	public function monthly_summary() {
+	
+	public function yearly_totals() {
 		$months = ['Jan','Feb','Mar','Apr','May','Jun','Jul', 'Aug','Sep','Oct','Nov','Dec'];
 		// $bikes  = ['Soma Saga', 'Grando', 'Ravn', 'Armstrong'];
   		$yr = date('Y');
