@@ -26,17 +26,11 @@ final class RidelogController extends ControllerBase {
 	public function montly() {
 
 		$ridelog = new RideLog();
-    
-    	$data = $ridelog->yearly_totals();
-
+    	$data = $ridelog->monthly_summary();
 
 		$render_array = [  
-      		'#theme'       => 'ridesummary',
-      		'#bikes'	   => $data['bikes'],
-      		'#rides'       => $data['rides'], 
-        	'#year_total'  => $data['year_total'],
-            '#month_total' => $data['month_total'], 
-        	'#bike_total'  => $data['bike_total'],
+      		'#theme'   => 'monthsummary',
+      		'#monthly'  => $data,
         ];
         
     	return $render_array;
@@ -46,17 +40,16 @@ final class RidelogController extends ControllerBase {
 	public function yearly() {
 
 		$ridelog = new RideLog();
-    
     	$data = $ridelog->yearly_totals();
 
-
 		$render_array = [  
-      		'#theme'       => 'ridesummary',
+      		'#theme'       => 'yeartotals',
       		'#bikes'	   => $data['bikes'],
       		'#rides'       => $data['rides'], 
         	'#year_total'  => $data['year_total'],
             '#month_total' => $data['month_total'], 
         	'#bike_total'  => $data['bike_total'],
+        	'#stats'	   => $data['stats'],
         ];
         
     	return $render_array;

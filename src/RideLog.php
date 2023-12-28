@@ -56,7 +56,14 @@ class RideLog {
   	}
 	
 		public function monthly_summary() {
-		
+			$months = ['Jan','Feb','Mar','Apr','May','Jun','Jul', 'Aug','Sep','Oct','Nov','Dec'];
+			$year = date('Y');
+			
+			// Loop through the months
+			foreach ($months as $month){
+				$stats[$month] = $this->rideclass->stats_by_month_year($month, $year);			
+			}
+			return $stats;
 		}
 	
 	
@@ -68,6 +75,9 @@ class RideLog {
   		// Loop though the years
   		for ($year = $yr; $year > 2003; $year--) {
   			$year_total[$year] = 0;
+  			
+  			// Get the yearly summaries
+			$stats[$year] = $this->rideclass->stats_by_year($year);
   			
   			// Must initialize each bike total for the year
   			foreach ($this->bikes as $nid => $bike){
@@ -111,12 +121,15 @@ class RideLog {
 			}
 		}				
 		
+		
+		
 		return [
 			'bikes'		  => $bikes,
 			'rides'       => $rides, 
 			'year_total'  => $year_total,
 			'month_total' => $month_total,
 			'bike_total'  => $bike_total,
+			'stats'		  => $stats,
 		];	
 	}
 		

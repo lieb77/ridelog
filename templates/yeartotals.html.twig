@@ -1,9 +1,29 @@
-<!-- Add you custom twig html here -->
-
-<h2>Paul's ridelog</h2>
+<!-- Year totals -->
+<h2>Yearly Totals</h2>
 
 {% for year,months in rides %}
 	<h3> {{ year }} </h3>    
+
+	
+		<table class='monthly-stats'>
+		  <tr>
+			<th>Total miles: </th>
+			<td>{{ stats[year]['total'] }}</dtd>
+		  </tr>
+		  <tr>
+			<th>Number of rides:</th>
+			<td>{{ stats[year]['count'] }}</td>
+		  </tr>
+		  <tr>
+			<th>Average per ride</th>
+			<td>{{ stats[year]['avg'] }}</td>
+		  </tr>
+		  <tr>
+			<th>Longest ride:</th>
+			<td>{{ stats[year]['long'] }}</td>
+		</tr>
+		</table>
+	
 <table>
 <thead>
 <tr><th>Month</th>

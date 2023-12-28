@@ -1,7 +1,7 @@
 ridelog.montly:
   path: '/bike/ridelog/montly'
   defaults:
-    _title: 'Stats'
+    _title: 'Ridelog'
     _controller: '\Drupal\ridelog\Controller\RidelogController:montly'
   requirements:
     _permission: 'access content'
@@ -9,7 +9,7 @@ ridelog.montly:
 ridelog.yearly:
   path: '/bike/ridelog/yearly'
   defaults:
-    _title: 'Stats'
+    _title: 'Ridelog'
     _controller: '\Drupal\ridelog\Controller\RidelogController:yearly'
   requirements:
     _permission: 'access content'

@@ -29,6 +29,40 @@ class Rides {
 		return $this->rides;
 	}	
 	
+	public function stats_by_year($year){
+		$total = 0;
+		$count = 0;
+		$long  = 0;
+		
+		foreach ($this->rides as $ride) {
+			if ($ride->is_year($year)) {
+				$miles = $ride->get_miles();
+				$total += $miles;
+				$long = $miles > $long ? $miles : $long;
+				$count++;
+			}
+		}
+		$avg = floor($total / $count);
+		return ['total' => $total, 'long' => $long, 'avg' => $avg, 'count' => $count];
+	}
+	
+	public function stats_by_month_year($month, $year){
+		$total = 0;
+		$count = 0;
+		$long  = 0;
+		
+		foreach ($this->rides as $ride) {
+			if ($ride->is_year($year) and $ride->is_month($month)) {
+				$miles = $ride->get_miles();
+				$total += $miles;
+				$long = $miles > $long ? $miles : $long;
+				$count++;
+			}
+		}
+		$avg = $count > 0 ? floor($total / $count) : $total;
+		return ['total' => $total, 'long' => $long, 'avg' => $avg, 'count' => $count];
+	}
+	
 	public function rides_by_year($year){
 		
 		foreach ($this->rides as $ride) {

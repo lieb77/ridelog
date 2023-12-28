@@ -40,17 +40,48 @@ function ridelog_theme() {
 			],
 		],	
 	];
-    $templates['ridesummary'] = [
+    $templates['yeartotals'] = [
 		'render element' => 'children',
 		'variables' => [
 			'bikes'	=> ['year'],
 		    'rides' => ['year' => ['month' => ['bike' => 'miles',],],],    			
     		'year_total'  => ['year' => 'miles'],
     		'month_total' => ['year' => ['month' => 'miles']],
-    		'bike_total' => ['year' => ['bike' => 'miles']],		
+    		'bike_total' => ['year' => ['bike' => 'miles']],	
+    		'stats'      => ['year' => [
+				'total' => 100,
+				'long'  => 50,
+				'avg'   => 20,
+				'count' => 10,
+			  ],
+			],	
     	],
     ];
-        
+    $templates['yearlysummary'] = [
+		'render element' => 'children',
+		'variables' => [
+			'yearly'  => ['year' => [
+				'total' => 100,
+				'long'  => 50,
+				'avg'   => 20,
+				'count' => 10,
+			  ],
+			],
+		],
+	];
+	$templates['monthsummary'] = [
+		'render element' => 'children',
+		'variables' => [
+			'monthly' => ['month' => [
+				'total' => 100,
+				'long'  => 50,
+				'avg'   => 20,
+				'count' => 10,
+				],
+			],
+		],
+	];
+    
     return $templates;	
     
 }

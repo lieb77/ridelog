@@ -1,0 +1,25 @@
+<!-- Yearly summary -->
+<h2>Yearly Summary</h2>
+
+{% for year,stats in yearly %}
+	<h3> {{ year }} </h3>    
+	<table class='monthly-stats'>
+	  <tr>
+		<th>Total miles: </th>
+		<td>{{ stats['total'] }}</dtd>
+	  </tr>
+	  <tr>
+		<th>Number of rides:</th>
+		<td>{{ stats['count'] }}</td>
+	  </tr>
+	  <tr>
+		<th>Average per ride</th>
+		<td>{{ stats['avg'] }}</td>
+	  </tr>
+	  <tr>
+		<th>Longest ride:</th>
+		<td>{{ stats['long'] }}</td>
+	</tr>
+	</table>
+		
+{% endfor %}
