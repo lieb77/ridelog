@@ -42,7 +42,7 @@ class Rides {
 				$count++;
 			}
 		}
-		$avg = floor($total / $count);
+		$avg = $count > 0 ? floor($total / $count) : $total;
 		return ['total' => $total, 'long' => $long, 'avg' => $avg, 'count' => $count];
 	}
 	
