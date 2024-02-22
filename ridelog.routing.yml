@@ -5,6 +5,8 @@ ridelog.montly:
     _controller: '\Drupal\ridelog\Controller\RidelogController:montly'
   requirements:
     _permission: 'access content'
+  options:
+    no_cache: 'TRUE'
 
 ridelog.yearly:
   path: '/bike/ridelog/yearly'
@@ -13,4 +15,6 @@ ridelog.yearly:
     _controller: '\Drupal\ridelog\Controller\RidelogController:yearly'
   requirements:
     _permission: 'access content'
+  options:
+    no_cache: 'TRUE'
 
