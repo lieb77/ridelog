@@ -67,17 +67,24 @@ class RideLog {
 		}
 	
 	
-	public function yearly_totals() {
+	public function yearly_totals($filter) {
 		$months = ['Jan','Feb','Mar','Apr','May','Jun','Jul', 'Aug','Sep','Oct','Nov','Dec'];
 		// $bikes  = ['Soma Saga', 'Grando', 'Ravn', 'Armstrong'];
-  		$yr = date('Y');
+		
+		  if (isset($filter['year'])) {
+		    $minyear = $maxyear = $filter['year'];
+		  }
+		  else {
+  		  $minyear = 2004;
+    		$maxyear = date('Y');
+    	}
   		
   		// Loop though the years
-  		for ($year = $yr; $year > 2003; $year--) {
+  		for ($year = $maxyear; $year >= $minyear; $year--) {
   			$year_total[$year] = 0;
   			
   			// Get the yearly summaries
-			$stats[$year] = $this->rideclass->stats_by_year($year);
+			  $stats[$year] = $this->rideclass->stats_by_year($year);
   			
   			// Must initialize each bike total for the year
   			foreach ($this->bikes as $nid => $bike){
@@ -108,7 +115,7 @@ class RideLog {
 		// build and array of bikes with miles for each year
 		// unset bikes with no miles in each array
 		foreach ($this->bikes as $nid => $bike){
-			for ($year = $yr; $year > 2003; $year--) {
+			for ($year = $maxyear; $year >= $minyear; $year--) {
 				if ($bike_total[$year][$bike] > 0) {
 					$bikes[$year][] = $bike;
 				}

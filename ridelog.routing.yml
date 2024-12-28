@@ -1,8 +1,8 @@
-ridelog.montly:
-  path: '/bike/ridelog/montly'
+ridelog.monthly:
+  path: '/bike/ridelog/monthly'
   defaults:
     _title: 'Ridelog'
-    _controller: '\Drupal\ridelog\Controller\RidelogController:montly'
+    _controller: '\Drupal\ridelog\Controller\RidelogController:monthly'
   requirements:
     _permission: 'access content'
   options:
