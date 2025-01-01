@@ -54,7 +54,12 @@ function ridelog_theme() {
 				'avg'   => 20,
 				'count' => 10,
 			  ],
-			],	
+            ],	
+            'grand'   => [
+                'miles' => 100000,
+                'rides' => 1000,
+                'avg'   => 5000,
+            ],
     	],
     ];
     $templates['yearlysummary'] = [
