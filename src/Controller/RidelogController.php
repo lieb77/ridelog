@@ -64,6 +64,7 @@ final class RidelogController extends ControllerBase {
       '#month_total' => $data['month_total'], 
       '#bike_total'  => $data['bike_total'],
       '#stats'	     => $data['stats'],
+      '#grand'       => $data['grand'],
     ];
         
     return $render_array;
