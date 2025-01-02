@@ -22,7 +22,7 @@ ridelog.form:
   path: '/bike/ridelog/form'
   defaults:
     _title: 'Ridelog'
-    _form: '\Drupal\ridelog\Form\RidelogForm'
+    _form: '\Drupal\ridelog\Form\RideLogForm'
   requirements:
     _permission: 'access content'
   options:
