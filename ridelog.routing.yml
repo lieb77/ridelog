@@ -18,3 +18,13 @@ ridelog.yearly:
   options:
     no_cache: 'TRUE'
 
+ridelog.form:
+  path: '/bike/ridelog/form'
+  defaults:
+    _title: 'Ridelog'
+    _form: '\Drupal\ridelog\Form\RidelogForm'
+  requirements:
+    _permission: 'access content'
+  options:
+    no_cache: 'TRUE'
+
