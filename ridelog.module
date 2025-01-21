@@ -81,7 +81,16 @@ function ridelog_theme() {
 			],
 		],
 	];
-    
+     $templates['years'] = [
+		'render element' => 'children',
+		'variables' => [
+			'years'  => ['year' => [
+				'miles' => 100,
+			  ],
+			],
+		],
+	];
+	   
     return $templates;	
     
 }

@@ -36,7 +36,22 @@ final class RidelogController extends ControllerBase {
     	return $render_array;
     	
 	}
-	
+
+
+    public function years() {
+		$ridelog = new RideLog();
+        $data = $ridelog->yearly_totals([]);
+        $years = $data['year_total'];
+        arsort($years);
+
+        $render_array = [
+            '#theme'    => 'years',
+            '#years'    => $years,
+        ];
+        return $render_array;
+
+    }    
+
 	public function yearly() {
 	
 	  // Get query string
@@ -49,6 +64,7 @@ final class RidelogController extends ControllerBase {
     if ($year) {
       $filter['year'] = $year;
     }
+
     if ($bike) {
       $filter['bike'] = $bike;
     }

@@ -112,7 +112,7 @@ class RideLog {
   			}
 		}
 		
-		// build and array of bikes with miles for each year
+		// build an array of bikes with miles for each year
 		// unset bikes with no miles in each array
 		foreach ($this->bikes as $nid => $bike){
 			for ($year = $maxyear; $year >= $minyear; $year--) {
