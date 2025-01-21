@@ -69,8 +69,13 @@ class RideLog {
 	
 	public function yearly_totals($filter) {
 		$months = ['Jan','Feb','Mar','Apr','May','Jun','Jul', 'Aug','Sep','Oct','Nov','Dec'];
-		// $bikes  = ['Soma Saga', 'Grando', 'Ravn', 'Armstrong'];
-		
+
+        $numyears = 0;
+        $grand['years'] = 0;
+        $grand['miles'] = 0;
+        $grand['rides'] = 0;
+        $grand['avg']   = 0;
+
 		  if (isset($filter['year'])) {
 		    $minyear = $maxyear = $filter['year'];
 		  }
@@ -82,7 +87,8 @@ class RideLog {
   		// Loop though the years
   		for ($year = $maxyear; $year >= $minyear; $year--) {
   			$year_total[$year] = 0;
-  			
+            $numyears++;
+
   			// Get the yearly summaries
 			  $stats[$year] = $this->rideclass->stats_by_year($year);
   			
@@ -106,7 +112,9 @@ class RideLog {
   						$rides[$year][$month][$bike] += $miles;
   						$month_total[$year][$month] += $miles;
   						$year_total[$year]   += $miles;
-  						$bike_total[$year][$bike]   += $miles;
+                        $bike_total[$year][$bike]   += $miles;
+                        $grand['miles'] += $miles;
+                        $grand['rides']++;
   					}					
   				}
   			}
@@ -126,9 +134,11 @@ class RideLog {
 					}
 				}
 			}
-		}				
-		
-		
+        }				
+
+        // Grand totals
+		$grand['years'] = $numyears;
+	    $grand['avg'] = floor($grand['miles'] / $numyears);	
 		
 		return [
 			'bikes'		  => $bikes,
@@ -136,7 +146,8 @@ class RideLog {
 			'year_total'  => $year_total,
 			'month_total' => $month_total,
 			'bike_total'  => $bike_total,
-			'stats'		  => $stats,
+            'stats'		  => $stats,
+            'grand'       => $grand,
 		];	
 	}
 		
@@ -207,7 +218,6 @@ class RideLog {
     			$total, $numrides, $month_total, $bike_total, $month_bike    		
     		];
     		
-			// dpm([[$year, $total, $numrides], $month_total, $bike_total, $month_bike]);	
 			break;    		
     	}	
 	}

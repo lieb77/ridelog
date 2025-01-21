@@ -72,7 +72,7 @@ final class RidelogController extends ControllerBase {
 		$ridelog = new RideLog();
     $data = $ridelog->yearly_totals($filter);
 
-		$render_array = [  
+	$render_array = [  
       '#theme'       => 'yeartotals',
       '#bikes'	     => $data['bikes'],
       '#rides'       => $data['rides'], 
@@ -80,6 +80,7 @@ final class RidelogController extends ControllerBase {
       '#month_total' => $data['month_total'], 
       '#bike_total'  => $data['bike_total'],
       '#stats'	     => $data['stats'],
+      '#grand'       => $data['grand'],
     ];
         
     return $render_array;
