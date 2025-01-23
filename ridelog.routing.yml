@@ -23,6 +23,11 @@ ridelog.years:
   defaults:
     _title: 'Ridelog'
     _controller: '\Drupal\ridelog\Controller\RidelogController:years'
+  requirements:
+    _permission: 'access content'
+  options:
+    no_cache: 'TRUE'
+
 
 ridelog.form:
   path: '/bike/ridelog/form'
