@@ -1,6 +1,6 @@
-name: 'ridelog'
+name: 'Ridelog'
 type: module
-core_version_requirement: ^8.8 || ^9 || ^10
-version: 3.0.4
+core_version_requirement:  ^10 || ^11
+version: 3.1.0
 description: 'Paul''s Ride Log'
 package: 'Custom'

@@ -1,0 +1,4 @@
+services:  
+  Drupal\ridelog\Hook\RidelogHooks:
+    class: Drupal\ridelog\Hook\RidelogHooks
+    autowire: true
