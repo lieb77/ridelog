@@ -2,3 +2,17 @@ services:
   Drupal\ridelog\Hook\RidelogHooks:
     class: Drupal\ridelog\Hook\RidelogHooks
     autowire: true
+
+  ridelog.ride:
+    class: \Drupal\ridelog\Ride
+    
+  ridelog.rides:
+    class: \Drupal\ridelog\Rides
+    
+  ridelog.ridelog:
+    class: \Drupal\ridelog\RideLog
+    arguments: [ '@logger.factory', '@entity_type.manager', '@ridelog.rides' ]
+    
+  ridelog.ridelog_controller:
+    class: Drupal\ridelog\Controller\RideLogController
+    
