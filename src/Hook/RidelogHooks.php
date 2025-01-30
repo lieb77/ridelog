@@ -36,73 +36,83 @@ class RidelogHooks
     #[Hook('theme')]
     public function theme()
     {
+    
+    	//
         $templates['ridelog'] = [
-        'render element' => 'children',
-        'variables' => [
-        'rides' => [
-        'ride1' => [
-        'title' => 'Ride1',
-        'bike'  => 'Grando',
-        'miles' => '99',
-        'date'  => '2023-12-25',
-        ],
-        ],
-        ],    
+			'render element' => 'children',
+			'variables' => [
+				'rides' => [
+					'ride1' => [
+						'title' => 'Ride1',
+						'bike'  => 'Grando',
+						'miles' => '99',
+						'date'  => '2023-12-25',
+					],
+				],
+			],    
         ];
+        
+        // Year totals - the main stats page
         $templates['yeartotals'] = [
-        'render element' => 'children',
-        'variables' => [
-        'bikes'    => ['year'],
-        'rides' => ['year' => ['month' => ['bike' => 'miles',],],],                
-        'year_total'  => ['year' => 'miles'],
-        'month_total' => ['year' => ['month' => 'miles']],
-        'bike_total' => ['year' => ['bike' => 'miles']],    
-        'stats'      => ['year' => [
-                    'total' => 100,
-                    'long'  => 50,
-                    'avg'   => 20,
-                    'count' => 10,
-         ],
-        ],    
-        'grand'   => [
-        'miles' => 100000,
-        'rides' => 1000,
-        'avg'   => 5000,
-        ],
-        ],
+			'render element' => 'children',
+			'variables' => [
+			'bikes'    => ['year'],
+			'rides' => ['year' => ['month' => ['bike' => 'miles',],],],                
+			'year_total'  => ['year' => 'miles'],
+			'month_total' => ['year' => ['month' => 'miles']],
+			'bike_total' => ['year' => ['bike' => 'miles']],    
+			'stats'      => ['year' => [
+				'total' => 100,
+				'long'  => 50,
+				'avg'   => 20,
+				'count' => 10,
+				],
+			],    
+			'grand'   => [
+				'miles' => 100000,
+				'rides' => 1000,
+				'avg'   => 5000,
+				],
+			],
         ];
+        
+        // This one might not be in use
         $templates['yearlysummary'] = [
-        'render element' => 'children',
-        'variables' => [
-        'yearly'  => ['year' => [
-                    'total' => 100,
-                    'long'  => 50,
-                    'avg'   => 20,
-                    'count' => 10,
-         ],
-        ],
-        ],
+			'render element' => 'children',
+			'variables' => [
+				'yearly'  => ['year' => [
+					'total' => 100,
+					'long'  => 50,
+					'avg'   => 20,
+					'count' => 10,
+					],
+				],
+			],
         ];
+        
+        // Montly summary for current year
         $templates['monthsummary'] = [
-        'render element' => 'children',
-        'variables' => [
-        'monthly' => ['month' => [
-                    'total' => 100,
-                    'long'  => 50,
-                    'avg'   => 20,
-                    'count' => 10,
-        ],
-        ],
-        ],
-        ];
-        $templates['years'] = [
-        'render element' => 'children',
-        'variables' => [
-        'years'  => ['year' => [
-                    'miles' => 100,
-         ],
-        ],
-        ],
+			'render element' => 'children',
+			'variables' => [
+				'monthly' => ['month' => [
+					'total' => 100,
+					'long'  => 50,
+					'avg'   => 20,
+					'count' => 10,
+					],
+				],
+			],
+		];
+		
+		// Total miles for every year
+		$templates['years'] = [
+			'render element' => 'children',
+			'variables' => [
+				'years'  => ['year' => [
+					'miles' => 100,
+				 	],
+				],
+			],
         ];
        
         return $templates;     

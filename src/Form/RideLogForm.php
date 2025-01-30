@@ -41,30 +41,30 @@ class RideLogForm extends FormBase
         // $stats_to_display = isset($form_state['values']['ridelog']) ? $form_state['values']['ridelog'] : 1;
 
         $form['ridelog'] = [
-        '#title' => t("Display statistics as:"),
-        '#type'  => 'radios',
-        '#options' => [
-        1 => t("Miles by bike"),
-        2 => t("Rides by distance 40 mile increments"),
-        3 => t("Rides by distance 20 mile increments"),
-        4 => t("Rides by distance 10 mile increments"),
-        ],
-        '#default_value' => 1,
+			'#title' => t("Display statistics as:"),
+			'#type'  => 'radios',
+			'#options' => [
+				1 => t("Miles by bike"),
+				2 => t("Rides by distance 40 mile increments"),
+				3 => t("Rides by distance 20 mile increments"),
+				4 => t("Rides by distance 10 mile increments"),
+			],
+			'#default_value' => 1,
         ];
 
         $form['submit'] = [
-        '#type'   => "submit",
-        '#value'  => t("Go"),
+        	'#type'   => "submit",
+        	'#value'  => t("Go"),
         ];
         $form['stats'] = [
-        //'#markup' => ridelog_get_stats($stats_to_display),
+        	//'#markup' => ridelog_get_stats($stats_to_display),
         ];
             
         if ($this->output > 0) {        
             $form['output'] = [
-                    '#type'    => 'item',
-                    '#markup'  => $this->output
-                ];
+				'#type'    => 'item',
+				'#markup'  => $this->output
+			];
         }
         return $form;
 
