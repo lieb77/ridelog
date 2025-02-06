@@ -1,74 +1,95 @@
 <?php
 
-/**
- * @file
- *  Ride.php
- *
- * @Creted
- *  2023-12-25 - Paul Lieberman
- *
- * Dupal 8 upgrade of my ridelog
- */
-
 namespace Drupal\ridelog;
 
-class Ride
-{
-    protected $nid;
-    protected $year;
-    protected $month;
-    protected $bike;
-    protected $miles;
+/**
+ * Holds data for one ride
+ *
+ */
+class Ride {
+  protected $nid;
+  protected $year;
+  protected $month;
+  protected $bike;
+  protected $miles;
 
-    public function __construct($nid, $year, $month, $bike, $miles)
-    {
-        $this->nid   = $nid;
-        $this->year  = $year;
-        $this->month = $month;
-        $this->bike  = $bike;
-        $this->miles = $miles;
-        
-        return $this;
-    }
+  public function __construct($nid, $year, $month, $bike, $miles) {
+    $this->nid   = $nid;
+    $this->year  = $year;
+    $this->month = $month;
+    $this->bike  = $bike;
+    $this->miles = $miles;
 
-    public function get()
-    {
-        return [
-			'nid'    => $this->nid,
-			'year'   => $this->year,
-			'month'  => $this->month,
-			'bike'   => $this->bike,
-			'miles'  => $this->miles
-        ];
-    }    
-    
-    public function is_year($year)
-    {
-        if ($this->year == $year) {
-            return true;
-        }
-        return false;                    
+    return $this;
+  }
+
+  /**
+   * Returns the data
+   *
+   * @return array
+   */
+  public function get() {
+    return [
+      'nid'    => $this->nid,
+      'year'   => $this->year,
+      'month'  => $this->month,
+      'bike'   => $this->bike,
+      'miles'  => $this->miles,
+    ];
+  }
+
+  /**
+   * Checks if ride is given year
+   * 
+   * @param $year
+   *  The year
+   *
+   * @return TRUE|FALSE
+   */
+  public function isYear($year) {
+    if ($this->year == $year) {
+      return TRUE;
     }
-    
-    
-    public function is_bike($bike)
-    {
-        if ($this->bike == $bike) {
-            return true;
-        }                
-        return false;                    
+    return FALSE;
+  }
+
+  /**
+   * Checks if ride is given bike
+   * 
+   * @param $bike
+   *  The bike
+   *
+   * @return TRUE|FALSE
+   */
+  public function isBike($bike) {
+    if ($this->bike == $bike) {
+      return TRUE;
     }
-    
-    public function is_month($month)
-    {
-        if ($this->month == $month) {
-            return true;
-        }
-        return false;                    
+    return FALSE;
+  }
+
+	/**
+   * Checks if ride is given month
+   * 
+   * @param $month
+   *  The month
+   *
+   * @return TRUE|FALSE
+   */
+  public function isMonth($month) {
+    if ($this->month == $month) {
+      return TRUE;
     }
-    
-    public function get_miles()
-    {
-        return $this->miles;
-    }
+    return FALSE;
+  }
+
+  /**
+   * Get the miles
+   *
+   * @return $miles
+   */
+  public function getMiles() {
+    return $this->miles;
+  }
+
 }

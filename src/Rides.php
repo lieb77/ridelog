@@ -1,122 +1,125 @@
 <?php
 
-/**
- * @file
- *  Rides.php
- *
- * @Creted
- *  2023-12-25 - Paul Lieberman
- *
- * Dupal 8 upgrade of my ridelog
- */
-
 namespace Drupal\ridelog;
 
-use Drupal\ridelog\Ride;
+/**
+ *
+ */
+class Rides {
+  protected $rideclass;
+  protected $rides;
 
-class Rides
-{
-	protected $rideclass;
-    protected $rides;
+  public function __construct() {
 
-    public function __construct()
-    {
-    	
-    }
-    
-    public function add_ride($nid, $year, $month, $bike, $miles)
-    {
-        $this->rides[] = new Ride($nid, $year, $month, $bike, $miles);
-    }
+  }
 
-    public function rides()
-    {
-        return $this->rides;
-    }    
-    
-    public function stats_by_year($year)
-    {
-        $total = 0;
-        $count = 0;
-        $long  = 0;
-        
-        foreach ($this->rides as $ride) {
-            if ($ride->is_year($year)) {
-                $miles = $ride->get_miles();
-                $total += $miles;
-                $long = $miles > $long ? $miles : $long;
-                $count++;
-            }
-        }
-        $avg = $count > 0 ? floor($total / $count) : $total;
-        return ['total' => $total, 'long' => $long, 'avg' => $avg, 'count' => $count];
+  /**
+   *
+   */
+  public function addRide($nid, $year, $month, $bike, $miles) {
+    $this->rides[] = new Ride($nid, $year, $month, $bike, $miles);
+  }
+
+  /**
+   *
+   */
+  public function rides() {
+    return $this->rides;
+  }
+
+  /**
+   *
+   */
+  public function statsByYear($year) {
+    $total = 0;
+    $count = 0;
+    $long  = 0;
+
+    foreach ($this->rides as $ride) {
+      if ($ride->isYear($year)) {
+        $miles = $ride->getMiles();
+        $total += $miles;
+        $long = $miles > $long ? $miles : $long;
+        $count++;
+      }
     }
-    
-    public function stats_by_month_year($month, $year)
-    {
-        $total = 0;
-        $count = 0;
-        $long  = 0;
-        
-        foreach ($this->rides as $ride) {
-            if ($ride->is_year($year) and $ride->is_month($month)) {
-                $miles = $ride->get_miles();
-                $total += $miles;
-                $long = $miles > $long ? $miles : $long;
-                $count++;
-            }
-        }
-        $avg = $count > 0 ? floor($total / $count) : $total;
-        return ['total' => $total, 'long' => $long, 'avg' => $avg, 'count' => $count];
+    $avg = $count > 0 ? floor($total / $count) : $total;
+    return ['total' => $total, 'long' => $long, 'avg' => $avg, 'count' => $count];
+  }
+
+  /**
+   *
+   */
+  public function statsByMonthYear($month, $year) {
+    $total = 0;
+    $count = 0;
+    $long  = 0;
+
+    foreach ($this->rides as $ride) {
+      if ($ride->isYear($year) and $ride->isMonth($month)) {
+        $miles = $ride->getMiles();
+        $total += $miles;
+        $long = $miles > $long ? $miles : $long;
+        $count++;
+      }
     }
-    
-    public function rides_by_year($year)
-    {
-        
-        foreach ($this->rides as $ride) {
-            if ($ride->is_year($year)) {
-                $retrides[] = $ride;
-            }
-        }
-        return $retrides;    
+    $avg = $count > 0 ? floor($total / $count) : $total;
+    return ['total' => $total, 'long' => $long, 'avg' => $avg, 'count' => $count];
+  }
+
+  /**
+   *
+   */
+  public function ridesByYear($year) {
+
+    foreach ($this->rides as $ride) {
+      if ($ride->isYear($year)) {
+        $retrides[] = $ride;
+      }
     }
-    
-    
-    public function rides_by_bike($bike)
-    {
-        
-        foreach ($this->rides as $ride) {
-            if ($ride->is_bike($bike)) {
-                $retrides[] = $ride;
-            }
-        }
-        return $retrides;    
+    return $retrides;
+  }
+
+  /**
+   *
+   */
+  public function ridesByBike($bike) {
+
+    foreach ($this->rides as $ride) {
+      if ($ride->isBike($bike)) {
+        $retrides[] = $ride;
+      }
     }
-    
-    public function rides_by_bike_year($bike, $year)
-    {
-        foreach ($this->rides as $ride) {
-            if ($ride->is_bike($bike) and $ride->is_year($year)) {
-                $retrides[] = $ride;
-            }
-        }
-        return $retrides;        
+    return $retrides;
+  }
+
+  /**
+   *
+   */
+  public function ridesByBikeYear($bike, $year) {
+    foreach ($this->rides as $ride) {
+      if ($ride->isBike($bike) and $ride->isYear($year)) {
+        $retrides[] = $ride;
+      }
     }
-    
-    public function rides_by_bike_year_month($bike, $year, $month)
-    {
-        $retrides = [];
-        foreach ($this->rides as $ride) {
-            if ($ride->is_bike($bike) 
-                and $ride->is_year($year)
-                and $ride->is_month($month)
-            ) {
-                
-                $retrides[] = $ride;
-            }
-        }
-        return $retrides;        
+    return $retrides;
+  }
+
+  /**
+   *
+   */
+  public function ridesByBikeYearMonth($bike, $year, $month) {
+    $retrides = [];
+    foreach ($this->rides as $ride) {
+      if ($ride->isBike($bike)
+            and $ride->isYear($year)
+            and $ride->isMonth($month)
+        ) {
+
+        $retrides[] = $ride;
+      }
     }
-    
-    
+    return $retrides;
+  }
+
 }
