@@ -11,15 +11,12 @@ use Symfony\Component\HttpFoundation\Request;
  * Returns responses for ridelog routes.
  */
 final class RidelogController extends ControllerBase {
+
+
   /**
-   *
-   * @Param
+   * Initialize controller
    */
-
-  protected RideLog $ridelog;
-
-  public function __construct(RideLog $ridelog) {
-    $this->ridelog = $ridelog;
+  public function __construct(protected RideLog $ridelog) {
 
   }
 
@@ -32,14 +29,9 @@ final class RidelogController extends ControllerBase {
         );
   }
 
-  /**
-   * Builds the response.
-   */
-  public function __invoke(): array {
-  }
 
   /**
-   *
+   * Monthly summary
    */
   public function monthly() {
     $data = $this->ridelog->monthlySummary();
@@ -54,7 +46,7 @@ final class RidelogController extends ControllerBase {
   }
 
   /**
-   *
+   * Year totals
    */
   public function years() {
     $data = $this->ridelog->yearlyTotals([]);
@@ -70,7 +62,7 @@ final class RidelogController extends ControllerBase {
   }
 
   /**
-   *
+   * The full stats
    */
   public function yearly(Request $request) {
 

@@ -7,20 +7,18 @@ namespace Drupal\ridelog;
  *
  */
 class Ride {
-  protected $nid;
-  protected $year;
-  protected $month;
-  protected $bike;
-  protected $miles;
-
-  public function __construct($nid, $year, $month, $bike, $miles) {
-    $this->nid   = $nid;
-    $this->year  = $year;
-    $this->month = $month;
-    $this->bike  = $bike;
-    $this->miles = $miles;
-
-    return $this;
+  
+	/**
+	 * Constructs a new ride with given data
+	 *
+	 */
+  public function __construct(
+				protected readonly int    $nid,
+				protected readonly int    $year,
+				protected readonly string $month,
+				protected readonly string $bike,
+				protected readonly int    $miles,
+		){
   }
 
   /**
