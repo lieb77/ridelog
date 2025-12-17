@@ -1,0 +1,27 @@
+'$schema': 'https://git.drupalcode.org/project/drupal/-/raw/10.1.x/core/modules/sdc/src/metadata.schema.json'
+name: ridelog
+status: stable
+description: Display the ridelog
+props:
+  type: object
+  properties:
+    route:
+      type: string
+      title: Route
+      # @todo Add examples here.
+      examples: []
+    ridedate:
+      type: string
+      title: Date
+      # @todo Add examples here.
+      examples: []
+    miles:
+      type: number
+      title: Miles
+      # @todo Add examples here.
+      examples: []
+    bike:
+      type: string
+      title: Bike
+      # @todo Add examples here.
+      examples: []

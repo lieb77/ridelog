@@ -19,39 +19,40 @@ use Drupal\Core\Controller\ControllerBase;
 final class RidelogController extends ControllerBase {
 
     /**
-     * Builds the response.
-     */
-	public function __invoke(): array { }
-	
+     * Monthly stats
+     */	
 	public function monthly() {
 
 		$ridelog = new RideLog();
     	$data = $ridelog->monthly_summary();
 
-		$render_array = [  
-      '#theme'   => 'monthsummary',
-      '#monthly'  => $data,
-    ];
-        
-    	return $render_array;
-    	
+    	return [
+      		'#type' 	 => 'component',
+      		'#component' => 'ridelog:monthly',
+      		'#props' 	 => ['monthly' => $data],
+    	];	
 	}
 
-
+    /**
+     * Years
+     */	
     public function years() {
 		$ridelog = new RideLog();
         $data = $ridelog->yearly_totals([]);
         $years = $data['year_total'];
         arsort($years);
-
-        $render_array = [
-            '#theme'    => 'years',
-            '#years'    => $years,
-        ];
-        return $render_array;
+        
+        return [
+      		'#type' 	 => 'component',
+      		'#component' => 'ridelog:years',
+      		'#props' 	 => ['years' => $years],
+    	];	
 
     }    
-
+    
+    /**
+     * Yearly stats
+     */	
 	public function yearly() {
 	
 		// Get query string
