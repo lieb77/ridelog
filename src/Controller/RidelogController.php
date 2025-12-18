@@ -73,7 +73,8 @@ final class RidelogController extends ControllerBase {
 	public function yearly() {
 
 		// Get query string
-		$query   = $this->requestStack->query;
+		$request = $this->requestStack->getCurrentRequest();
+		$query   = $request->query;
 		$year    = $query->get('year');
 		$bike    = $query->get('bike');
 
