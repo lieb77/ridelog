@@ -30,7 +30,7 @@ final class RidelogController extends ControllerBase {
   public static function create(ContainerInterface $container): static {
     return new static(
       $container->get('ridelog.ridelog'),
-      $container->get('@request_stack'),
+      $container->get('request_stack'),
     );
   }
 
