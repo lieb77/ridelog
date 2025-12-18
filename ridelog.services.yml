@@ -5,5 +5,5 @@ services:
 
   ridelog.ridelog:
     class: Drupal\ridelog\RideLog
-    arguments: ['@entity_type.manager, @logger.channel.ridelog']
+    arguments: ['@entity_type.manager', '@logger.channel.ridelog']
 
