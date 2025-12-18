@@ -12,6 +12,7 @@ namespace Drupal\ridelog\Controller;
 use Drupal\ridelog\EmptyRides;
 use Drupal\ridelog\RideLog;
 use Drupal\Core\Controller\ControllerBase;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Returns responses for ridelog routes.
