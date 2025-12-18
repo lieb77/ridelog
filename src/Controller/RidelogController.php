@@ -13,6 +13,7 @@ use Drupal\ridelog\EmptyRides;
 use Drupal\ridelog\RideLog;
 use Drupal\Core\Controller\ControllerBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * Returns responses for ridelog routes.
@@ -20,7 +21,8 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 final class RidelogController extends ControllerBase {
 
   public function __construct(
-    protected RideLog $rideLog ) {}
+    protected RideLog $rideLog,
+    protected RequestStack $requestStack  ) {}
 
   /**
    * {@inheritdoc}
@@ -28,11 +30,9 @@ final class RidelogController extends ControllerBase {
   public static function create(ContainerInterface $container): static {
     return new static(
       $container->get('ridelog.ridelog'),
+      $container->get('@request_stack'),
     );
   }
-
-
-
 
     /**
      * Monthly stats
@@ -73,8 +73,7 @@ final class RidelogController extends ControllerBase {
 	public function yearly() {
 
 		// Get query string
-		$request = \Drupal::request();
-		$query   = $request->query;
+		$query   = $this->requestStack->query;
 		$year    = $query->get('year');
 		$bike    = $query->get('bike');
 
