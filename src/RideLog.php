@@ -45,7 +45,6 @@ class RideLog {
 
     	$this->monthly_summary();
 
-		$this->logger->notice('Constructor finished');
 	}
 
 	/**
@@ -233,7 +232,7 @@ class RideLog {
 	protected function query_rides($year) {
 
 		// Will return everything from $year on
-   		$nids = \Drupal::entityQuery('node')
+   		$nids = $this->storage->getQuery()
    	  		->accessCheck(TRUE)
       		->condition('type', 'ride')
       		->condition('field_ridedate', $year . "-01-01", '>' )
@@ -283,9 +282,8 @@ class RideLog {
 	 *
 	 */
 	protected function query_bikes() {
-		$this->logger->notice('get_bikes');
 
-   		$nids = \Drupal::entityQuery('node')
+   		$nids = $this->storage->getQuery()
    	  		->accessCheck(TRUE)
       		->condition('type', 'bicycle')
       //		->condition('field_bike_activre', TRUE)
