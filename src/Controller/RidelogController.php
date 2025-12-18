@@ -6,7 +6,7 @@
  * Provides a controller class for the ridelog module
  *
  */
- 
+
 namespace Drupal\ridelog\Controller;
 
 use Drupal\ridelog\EmptyRides;
@@ -20,7 +20,7 @@ final class RidelogController extends ControllerBase {
 
     /**
      * Monthly stats
-     */	
+     */
 	public function monthly() {
 
 		$ridelog = new RideLog();
@@ -30,65 +30,67 @@ final class RidelogController extends ControllerBase {
       		'#type' 	 => 'component',
       		'#component' => 'ridelog:monthly',
       		'#props' 	 => ['monthly' => $data],
-    	];	
+    	];
 	}
 
     /**
      * Years
-     */	
+     */
     public function years() {
 		$ridelog = new RideLog();
         $data = $ridelog->yearly_totals([]);
         $years = $data['year_total'];
         arsort($years);
-        
+
+        $miles = $data['grand']['miles'];
+
         return [
       		'#type' 	 => 'component',
       		'#component' => 'ridelog:years',
-      		'#props' 	 => ['years' => $years],
-    	];	
+      		'#props' 	 => ['years' => $years, 'miles' => $miles],
+    	];
 
-    }    
-    
+    }
+
     /**
      * Yearly stats
-     */	
+     */
 	public function yearly() {
-	
+
 		// Get query string
 		$request = \Drupal::request();
 		$query   = $request->query;
 		$year    = $query->get('year');
 		$bike    = $query->get('bike');
-		
+
 		$filter = [];
 		if ($year) {
 		  $filter['year'] = $year;
 		}
-		
+
 		if ($bike) {
 		  $filter['bike'] = $bike;
 		}
-		
+
 		$ridelog = new RideLog();
 		$data = $ridelog->yearly_totals($filter);
-		
-		$props = [  
+
+		$props = [
 			'bikes'	      => $data['bikes'],
-			'rides'       => $data['rides'], 
+			'rides'       => $data['rides'],
 			'year_total'  => $data['year_total'],
-			'month_total' => $data['month_total'], 
+			'month_total' => $data['month_total'],
 			'bike_total'  => $data['bike_total'],
 			'stats'	   	  => $data['stats'],
 			'grand'       => $data['grand'],
 		];
-		
+
 		return [
       		'#type' 	 => 'component',
       		'#component' => 'ridelog:yeartotals',
       		'#props' 	 => $props,
-    	];	
+    	];
 	}
-	
-// End-of-class	
+
+// End-of-class
 }

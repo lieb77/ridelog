@@ -8,13 +8,17 @@
       </tr>
 
 
-      {% for year,miles in years %}
+      {% for year,ymiles in years %}
         <tr>
             <td>{{ year }}</td>
-            <td>{{ miles }}</td>
+            <td>{{ ymiles }}</td>
        </tr>
 
     {% endfor %}
+    <tr>
+      <td>Grand total</td>
+      <td>{{ miles }}</td>
+    </tr>
 
 	</table>
-		
+
