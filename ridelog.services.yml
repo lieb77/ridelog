@@ -1,8 +1,9 @@
 services:
+  logger.channel.ridelog:
+    parent: logger.channel_base
+    arguments: ['ridelog']
+
   ridelog.ridelog:
     class: Drupal\ridelog\RideLog
     arguments: ['@entity_type.manager, @logger.channel.ridelog']
 
-  logger.channel.ridelog:
-    parent: logger.channel_base
-    arguments: ['ridelog']
