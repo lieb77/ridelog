@@ -21,7 +21,6 @@ use Drupal\ridelog\Rides;
 
 class RideLog {
 
-	protected $rideclass;
 	protected $rides;
 	protected $bikes;
 	protected $fulldata;
