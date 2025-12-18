@@ -31,19 +31,16 @@ class RideLog {
 	// constructor initializes database query
 	public function __construct(
         protected EntityTypeManagerInterface $entityTypeManager,
-        protected LoggerChannelInterface $logger) {
+        protected LoggerChannelInterface $logger,
+        protected Rides $rideclass ) {
 
       	$this->storage = $entityTypeManager->getStorage('node');
-
-      	$this->rideclass = new Rides();
 
 		// Get the array of bikes
 		$this->query_bikes();
 
 		// query rides for each year
     	$this->query_rides("2003");
-
-    	$this->monthly_summary();
 
 	}
 
@@ -55,16 +52,16 @@ class RideLog {
 		return $this->rides;
   	}
 
-		public function monthly_summary() {
-			$months = ['Jan','Feb','Mar','Apr','May','Jun','Jul', 'Aug','Sep','Oct','Nov','Dec'];
-			$year = date('Y');
+    public function monthly_summary() {
+        $months = ['Jan','Feb','Mar','Apr','May','Jun','Jul', 'Aug','Sep','Oct','Nov','Dec'];
+        $year = date('Y');
 
-			// Loop through the months
-			foreach ($months as $month){
-				$stats[$month] = $this->rideclass->stats_by_month_year($month, $year);
-			}
-			return $stats;
-		}
+        // Loop through the months
+        foreach ($months as $month){
+            $stats[$month] = $this->rideclass->stats_by_month_year($month, $year);
+        }
+        return $stats;
+    }
 
 
 	public function yearly_totals($filter) {
