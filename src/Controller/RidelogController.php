@@ -18,13 +18,27 @@ use Drupal\Core\Controller\ControllerBase;
  */
 final class RidelogController extends ControllerBase {
 
+  public function __construct(
+    protected RideLog $rideLog ) {}
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container): static {
+    return new static(
+      $container->get('ridelog.ridelog'),
+    );
+  }
+
+
+
+
     /**
      * Monthly stats
      */
 	public function monthly() {
 
-		$ridelog = new RideLog();
-    	$data = $ridelog->monthly_summary();
+    	$data = $this->rideLog->monthly_summary();
 
     	return [
       		'#type' 	 => 'component',
@@ -37,8 +51,8 @@ final class RidelogController extends ControllerBase {
      * Years
      */
     public function years() {
-		$ridelog = new RideLog();
-        $data = $ridelog->yearly_totals([]);
+
+        $data = $this->rideLog->yearly_totals([]);
         $years = $data['year_total'];
         arsort($years);
 
@@ -72,8 +86,7 @@ final class RidelogController extends ControllerBase {
 		  $filter['bike'] = $bike;
 		}
 
-		$ridelog = new RideLog();
-		$data = $ridelog->yearly_totals($filter);
+		$data = $this->rideLog->yearly_totals($filter);
 
 		$props = [
 			'bikes'	      => $data['bikes'],
