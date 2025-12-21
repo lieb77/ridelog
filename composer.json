@@ -1,21 +1,9 @@
 {
     "name": "lieb/ridelog",
     "description": "Paul's ride log",
-    "type": "drupal-module",
-    "license": "GPL-2.0+",
-    "autoload": {
-        "psr-4": {
-            "Lieb\\Ridelog\\": "src/"
-        }
-    },
-    "authors": [
-        {
-            "name": "Paul Lieberman",
-            "email": "lieb@orchardware.net"
-        }
-    ],
-    "minimum-stability": "dev",
+    "type": "drupal-custom-module",
+    "license": "GPL-2.0-or-later",
     "require": {
-    	"php": ">=8.1"
+        "drupal/core": "^10 || ^11"
     }
 }
