@@ -76,17 +76,10 @@ final class RidelogController extends ControllerBase {
 		$request = $this->requestStack->getCurrentRequest();
 		$query   = $request->query;
 		$year    = $query->get('year');
-		$bike    = $query->get('bike');
-
-		$filter = [];
-		if ($year) {
-		  $filter['year'] = $year;
-		}
-
-		if ($bike) {
-		  $filter['bike'] = $bike;
-		}
-
+				
+		$year = empty($year) ? 2025 : $year; 
+	    $filter['year'] = $year;
+		
 		$data = $this->rideLog->yearly_totals($filter);
 
 		$props = [
@@ -97,12 +90,13 @@ final class RidelogController extends ControllerBase {
 			'bike_total'  => $data['bike_total'],
 			'stats'	   	  => $data['stats'],
 			'grand'       => $data['grand'],
+			'curry'		  => $year,
 		];
 
 		return [
       		'#type' 	 => 'component',
       		'#component' => 'ridelog:yeartotals',
-      		'#props' 	 => $props,
+      		'#props' 	 => $props,      		
     	];
 	}
 

@@ -1,0 +1,7 @@
+ridelog:
+  version: VERSION
+  dependencies:
+    - core/htmx
+    - core/drupal
+    - core/drupal.htmx
+    
