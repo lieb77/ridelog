@@ -11,14 +11,8 @@
 
 {{ attach_library('core/htmx') }}
 
-
-{% set prevy = curry - 1 %}
-
-{# Summary block at the top of each year #}
-<h2>Yearly Totals</h2>
-
 <div id="ridelog"
-	 data-hx-get="/bike/ridelog/yearly?year={{ prevy }}"
+	 data-hx-get="/bike/ridelog/nextyear"
      data-hx-trigger="revealed"
      data-hx-target="#ridelog"
      data-hx-swap="beforeend">

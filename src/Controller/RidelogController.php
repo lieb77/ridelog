@@ -12,6 +12,7 @@ namespace Drupal\ridelog\Controller;
 use Drupal\ridelog\EmptyRides;
 use Drupal\ridelog\RideLog;
 use Drupal\Core\Controller\ControllerBase;
+use Drupal\Core\TempStore\PrivateTempStoreFactory;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 
@@ -20,9 +21,16 @@ use Symfony\Component\HttpFoundation\RequestStack;
  */
 final class RidelogController extends ControllerBase {
 
+  protected $store;
+
   public function __construct(
     protected RideLog $rideLog,
-    protected RequestStack $requestStack  ) {}
+    protected RequestStack $requestStack,
+    protected PrivateTempStoreFactory $tempStoreFactory  ) {
+
+    $this->store = $tempStoreFactory->get("ridelog");
+  
+  }
 
   /**
    * {@inheritdoc}
@@ -31,6 +39,7 @@ final class RidelogController extends ControllerBase {
     return new static(
       $container->get('ridelog.ridelog'),
       $container->get('request_stack'),
+      $container->get('tempstore.private'),
     );
   }
 
@@ -79,6 +88,37 @@ final class RidelogController extends ControllerBase {
 				
 		$year = empty($year) ? 2025 : $year; 
 	    $filter['year'] = $year;
+
+        $this->store->set('year', $year);
+
+		$data = $this->rideLog->yearly_totals($filter);
+
+		$props = [
+			'bikes'	      => $data['bikes'],
+			'rides'       => $data['rides'],
+			'year_total'  => $data['year_total'],
+			'month_total' => $data['month_total'],
+			'bike_total'  => $data['bike_total'],
+			'stats'	   	  => $data['stats'],
+			'grand'       => $data['grand'],
+		];
+
+		return [
+      		'#type' 	 => 'component',
+      		'#component' => 'ridelog:yeartotals',
+      		'#props' 	 => $props,      		
+    	];
+    }
+
+    /**
+     * Yearly stats
+     */
+	public function nextyear() {
+
+        $year = $this->store->get('year') - 1;
+        $this->store->set('year', $year);
+
+	    $filter['year'] = $year;
 		
 		$data = $this->rideLog->yearly_totals($filter);
 
@@ -90,7 +130,7 @@ final class RidelogController extends ControllerBase {
 			'bike_total'  => $data['bike_total'],
 			'stats'	   	  => $data['stats'],
 			'grand'       => $data['grand'],
-			'curry'		  => $year,
+			'nexty'		  => $year - 1,
 		];
 
 		return [
@@ -99,6 +139,7 @@ final class RidelogController extends ControllerBase {
       		'#props' 	 => $props,      		
     	];
 	}
+
 
 // End-of-class
 }

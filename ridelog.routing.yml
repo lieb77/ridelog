@@ -28,6 +28,16 @@ ridelog.years:
   options:
     no_cache: 'TRUE'
 
+ridelog.next:
+  path: '/bike/ridelog/nextyear'
+  defaults:
+    _title: 'Ridelog'
+    _controller: '\Drupal\ridelog\Controller\RidelogController:nextyear'
+  requirements:
+    _permission: 'access content'
+  options:
+    no_cache: 'TRUE'
+    _htmx_route: true
 
 ridelog.form:
   path: '/bike/ridelog/form'
