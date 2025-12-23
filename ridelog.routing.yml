@@ -9,7 +9,7 @@ ridelog.monthly:
     no_cache: 'TRUE'
 
 ridelog.yearly:
-  path: '/bike/ridelog/yearly'
+  path: '/bike/ridelog'
   defaults:
     _title: 'Ridelog'
     _controller: '\Drupal\ridelog\Controller\RidelogController:yearly'

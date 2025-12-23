@@ -13,23 +13,26 @@ use Drupal\ridelog\EmptyRides;
 use Drupal\ridelog\RideLog;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\TempStore\PrivateTempStoreFactory;
+use Drupal\Core\Datetime\DrupalDateTime;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * Returns responses for ridelog routes.
  */
 final class RidelogController extends ControllerBase {
 
-  protected $store;
+    protected $store;
+    protected $year;
 
   public function __construct(
     protected RideLog $rideLog,
-    protected RequestStack $requestStack,
-    protected PrivateTempStoreFactory $tempStoreFactory  ) {
+    protected PrivateTempStoreFactory $tempStoreFactory,
+    ) {
 
-    $this->store = $tempStoreFactory->get("ridelog");
-  
+        $this->store = $tempStoreFactory->get("ridelog");
+
+        $dateTime = new DrupalDateTime();
+        $this->year  = $dateTime->format('Y');
   }
 
   /**
@@ -38,8 +41,8 @@ final class RidelogController extends ControllerBase {
   public static function create(ContainerInterface $container): static {
     return new static(
       $container->get('ridelog.ridelog'),
-      $container->get('request_stack'),
       $container->get('tempstore.private'),
+
     );
   }
 
@@ -81,18 +84,31 @@ final class RidelogController extends ControllerBase {
      */
 	public function yearly() {
 
-		// Get query string
-		$request = $this->requestStack->getCurrentRequest();
-		$query   = $request->query;
-		$year    = $query->get('year');
-				
-		$year = empty($year) ? 2025 : $year; 
-	    $filter['year'] = $year;
+	    $filter['year'] = $this->year;
 
-        $this->store->set('year', $year);
+        $this->store->set('year', $this->year);
 
 		$data = $this->rideLog->yearly_totals($filter);
 
+        return $this->outputYear($data);
+    }
+
+    /**
+     * Next (actually previous) year
+     */
+	public function nextyear() {
+
+        $year = $this->store->get('year') - 1;
+        $this->store->set('year', $year);
+
+	    $filter['year'] = $year;
+		
+		$data = $this->rideLog->yearly_totals($filter);
+        return $this->outputYear($data);
+    }
+
+
+    protected function outputYear($data) {
 		$props = [
 			'bikes'	      => $data['bikes'],
 			'rides'       => $data['rides'],
@@ -109,36 +125,6 @@ final class RidelogController extends ControllerBase {
       		'#props' 	 => $props,      		
     	];
     }
-
-    /**
-     * Yearly stats
-     */
-	public function nextyear() {
-
-        $year = $this->store->get('year') - 1;
-        $this->store->set('year', $year);
-
-	    $filter['year'] = $year;
-		
-		$data = $this->rideLog->yearly_totals($filter);
-
-		$props = [
-			'bikes'	      => $data['bikes'],
-			'rides'       => $data['rides'],
-			'year_total'  => $data['year_total'],
-			'month_total' => $data['month_total'],
-			'bike_total'  => $data['bike_total'],
-			'stats'	   	  => $data['stats'],
-			'grand'       => $data['grand'],
-			'nexty'		  => $year - 1,
-		];
-
-		return [
-      		'#type' 	 => 'component',
-      		'#component' => 'ridelog:yeartotals',
-      		'#props' 	 => $props,      		
-    	];
-	}
 
 
 // End-of-class
