@@ -46,7 +46,7 @@ class Rides {
    * @param float $miles
    *   The distance of the ride in miles.
    */
-  public function add_ride(int $nid, int $year, int $month, string $bike, float $miles): void {
+  public function add_ride($nid, $year, $month, $bike, $miles): void {
     $this->rides[] = new Ride($nid, $year, $month, $bike, $miles);
   }
 
@@ -69,7 +69,7 @@ class Rides {
    * @return array
    *   An array containing total miles, longest ride, average miles, and ride count.
    */
-  public function stats_by_year(int $year): array {
+  public function stats_by_year($year): array {
     $total = 0;
     $count = 0;
     $long = 0;
@@ -102,7 +102,7 @@ class Rides {
    * @return array
    *   An array containing total miles, longest ride, average miles, and ride count.
    */
-  public function stats_by_month_year(int $month, int $year): array {
+  public function stats_by_month_year($month, $year): array {
     $total = 0;
     $count = 0;
     $long = 0;
@@ -133,7 +133,7 @@ class Rides {
    * @return \Drupal\ridelog\Ride[]
    *   An array of Ride objects for the given year.
    */
-  public function rides_by_year(int $year): array {
+  public function rides_by_year($year): array {
     $retrides = [];
     foreach ($this->rides as $ride) {
       if ($ride->is_year($year)) {
@@ -152,7 +152,7 @@ class Rides {
    * @return \Drupal\ridelog\Ride[]
    *   An array of Ride objects for the given bike.
    */
-  public function rides_by_bike(string $bike): array {
+  public function rides_by_bike($bike): array {
     $retrides = [];
     foreach ($this->rides as $ride) {
       if ($ride->is_bike($bike)) {
@@ -173,7 +173,7 @@ class Rides {
    * @return \Drupal\ridelog\Ride[]
    *   An array of Ride objects for the given bike and year.
    */
-  public function rides_by_bike_year(string $bike, int $year): array {
+  public function rides_by_bike_year($bike, $year): array {
     $retrides = [];
     foreach ($this->rides as $ride) {
       if ($ride->is_bike($bike) && $ride->is_year($year)) {
@@ -196,7 +196,7 @@ class Rides {
    * @return \Drupal\ridelog\Ride[]
    *   An array of Ride objects for the given bike, year, and month.
    */
-  public function rides_by_bike_year_month(string $bike, int $year, int $month): array {
+  public function rides_by_bike_year_month($bike, $year, $month): array {
     $retrides = [];
     foreach ($this->rides as $ride) {
       if ($ride->is_bike($bike)
